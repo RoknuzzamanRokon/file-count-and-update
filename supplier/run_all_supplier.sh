@@ -9,6 +9,7 @@ SCRIPTS=(
     "hotelbeds/1_get_update_hotel_id_from_supplier.py"
     "hotelbeds/2_get_new_id.py"
     "hotelbeds/3_update_server_with_itt_content_api.py"
+    "hotelbeds/4_update_server_with_itt_content_api.py"
     "ean/get_update_hotel_and_save_json_into_server.py"
     "hyperguestdirect/1_get_all_id.py"
     "hyperguestdirect/2_get_new_id.py"
