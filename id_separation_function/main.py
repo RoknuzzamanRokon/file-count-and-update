@@ -64,6 +64,15 @@ save_dir = os.path.join(
 
 os.makedirs(save_dir, exist_ok=True)
 
+# Produced by supplier/<supplier>/2_get_new_id.py (currently only hotelbeds)
+update_ids_file = os.path.join(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
+    "supplier",
+    supplier,
+    "hotel_id",
+    "only_update_hotel_id.txt",
+)
+
 print(f"Supplier: {supplier}")
 print(f"JSON Path: {json_dir}")
 print(f"Output Path: {save_dir}")
@@ -169,10 +178,22 @@ server_not_db = sorted(server_ids - db_ids)
 db_not_server = sorted(db_ids - server_ids)
 
 # -----------------------------
+# Update Hotel IDs (existing hotels flagged as updated by supplier)
+# -----------------------------
+update_server_ids = set()
+
+if os.path.exists(update_ids_file):
+    with open(update_ids_file, "r", encoding="utf-8") as f:
+        update_server_ids = {line.strip() for line in f if line.strip()}
+
+print(f"Update Hotel IDs (server): {len(update_server_ids)}")
+
+# -----------------------------
 # Today's Accumulated Snapshot IDs
 # -----------------------------
 daily_server_not_db = server_not_db
 daily_database_new_ids = database_new_ids
+daily_update_server_ids = sorted(update_server_ids)
 
 if os.path.exists(history_file):
     with open(history_file, "r", encoding="utf-8") as f:
@@ -184,6 +205,10 @@ if os.path.exists(history_file):
     daily_database_new_ids = sorted(
         set(existing_snapshot.get("new_hotels_database_id", []))
         | set(database_new_ids)
+    )
+    daily_update_server_ids = sorted(
+        set(existing_snapshot.get("update_hotels_server_id", []))
+        | update_server_ids
     )
 
 # -----------------------------
@@ -242,6 +267,7 @@ INSERT INTO zz_masterdata_summary (
     total_hotels_database,
     new_hotels_server,
     new_hotels_database,
+    update_hotels_server,
     total_ittid_done,
     pending_ittid,
     last_day_add_hotel_id_into_server,
@@ -255,6 +281,7 @@ VALUES (
     :db_total,
     :new_server,
     :new_db,
+    :update_server,
     :ittid_done,
     :pending_ittid,
     :last_day_server,
@@ -267,6 +294,7 @@ ON DUPLICATE KEY UPDATE
     total_hotels_database = VALUES(total_hotels_database),
     new_hotels_server = VALUES(new_hotels_server),
     new_hotels_database = VALUES(new_hotels_database),
+    update_hotels_server = VALUES(update_hotels_server),
     total_ittid_done = VALUES(total_ittid_done),
     pending_ittid = VALUES(pending_ittid),
     last_day_add_hotel_id_into_server = VALUES(last_day_add_hotel_id_into_server),
@@ -285,6 +313,7 @@ with engine.begin() as conn:
             "db_total": len(db_ids),
             "new_server": len(daily_server_not_db),
             "new_db": len(daily_database_new_ids),
+            "update_server": len(daily_update_server_ids),
             "ittid_done": total_ittid_done,
             "pending_ittid": pending_ittid,
             "last_day_server": last_day_server,
@@ -308,6 +337,8 @@ snapshot = {
     "new_hotels_server_id": daily_server_not_db,
     "new_hotels_database": len(daily_database_new_ids),
     "new_hotels_database_id": daily_database_new_ids,
+    "update_hotels_server": len(daily_update_server_ids),
+    "update_hotels_server_id": daily_update_server_ids,
 }
 
 with open(history_file, "w", encoding="utf-8") as f:
