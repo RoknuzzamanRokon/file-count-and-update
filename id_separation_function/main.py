@@ -64,13 +64,11 @@ save_dir = os.path.join(
 
 os.makedirs(save_dir, exist_ok=True)
 
-# Produced by supplier/<supplier>/2_get_new_id.py (currently only hotelbeds)
-update_ids_file = os.path.join(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
-    "supplier",
+# Daily per-hotel change-log files: Supplier-Change-Log/<date>/<supplier>/<hotel_id>.jsonl
+change_log_dir = os.path.join(
+    r"/var/www/Storage-Contents/Supplier-Change-Log",
+    today,
     supplier,
-    "hotel_id",
-    "only_update_hotel_id.txt",
 )
 
 print(f"Supplier: {supplier}")
@@ -182,9 +180,12 @@ db_not_server = sorted(db_ids - server_ids)
 # -----------------------------
 update_server_ids = set()
 
-if os.path.exists(update_ids_file):
-    with open(update_ids_file, "r", encoding="utf-8") as f:
-        update_server_ids = {line.strip() for line in f if line.strip()}
+if os.path.isdir(change_log_dir):
+    for filename in os.listdir(change_log_dir):
+        if filename.lower().endswith(".jsonl"):
+            hotel_id = os.path.splitext(filename)[0].strip()
+            if hotel_id:
+                update_server_ids.add(hotel_id)
 
 print(f"Update Hotel IDs (server): {len(update_server_ids)}")
 
