@@ -64,11 +64,11 @@ save_dir = os.path.join(
 
 os.makedirs(save_dir, exist_ok=True)
 
-# Daily per-hotel change-log files: Supplier-Change-Log/<date>/<supplier>/<hotel_id>.jsonl
+# Daily per-hotel change-log files: Supplier-Change-Log/<supplier>/<date>/<hotel_id>.jsonl
 change_log_dir = os.path.join(
     r"/var/www/Storage-Contents/Supplier-Change-Log",
-    today,
     supplier,
+    today,
 )
 
 print(f"Supplier: {supplier}")
