@@ -6,6 +6,7 @@ SCRIPTS=(
     "agoda/1_get_update_hotel_id_from_supplier.py"
     "agoda/2_get_new_id.py"
     "agoda/3_update_server_with_itt_content_api.py"
+    "agoda/4_update_server_with_itt_content_api.py"
     "hotelbeds/1_get_update_hotel_id_from_supplier.py"
     "hotelbeds/2_get_new_id.py"
     "hotelbeds/3_update_server_with_itt_content_api.py"

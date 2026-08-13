@@ -13,6 +13,7 @@ project_root = os.path.abspath(
 a_path = os.path.join(project_root, "all_hotel_count_id_list", "agoda_hotel_id_list.txt")
 b_path = os.path.join(save_dir, "update_hotel_id_list.txt")
 c_path = os.path.join(save_dir, "new_hotel_id_list.txt")
+d_path = os.path.join(save_dir, "only_update_hotel_id.txt")
 
 # Build `agoda_hotel_id_list.txt` from a folder of JSON files (filenames like 123.json)
 # Default source folder: project_root/agoda (can be changed to an absolute path)
@@ -84,4 +85,15 @@ with open(c_path, "w", encoding="utf-8") as f:
         f.write(id + "\n")
 
 print(f"New hotel IDs saved to {c_path}")
+
+# Compute only-update IDs: those in update list but not in new list
+# Formula: only_update = update_hotel_id_list.txt - new_hotel_id_list.txt
+only_update = set_b - c
+
+# Write only-update IDs
+with open(d_path, "w", encoding="utf-8") as f:
+    for id in sorted(only_update, key=int):
+        f.write(id + "\n")
+
+print(f"Only-update hotel IDs saved to {d_path}")
 
