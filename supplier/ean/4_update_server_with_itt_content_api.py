@@ -40,7 +40,7 @@ def push_batch(batch, batch_no):
 
     while retry_count < MAX_RETRIES:
         try:
-            payload = {"supplier_code": "hotelbeds", "hotel_id": batch}
+            payload = {"supplier_code": "ean", "hotel_id": batch}
 
             response = requests.post(url, headers=headers, json=payload, timeout=120)
 
