@@ -40,17 +40,9 @@ def push_batch(batch, batch_no):
 
     while retry_count < MAX_RETRIES:
         try:
-            payload = {
-                "supplier_code": "hotelbeds",
-                "hotel_id": batch
-            }
+            payload = {"supplier_code": "hotelbeds", "hotel_id": batch}
 
-            response = requests.post(
-                url,
-                headers=headers,
-                json=payload,
-                timeout=120
-            )
+            response = requests.post(url, headers=headers, json=payload, timeout=120)
 
             print("\n" + "=" * 80)
             print(f"Batch: {batch_no}")
@@ -94,10 +86,7 @@ def push_batch(batch, batch_no):
                     time.sleep(RETRY_DELAY)
                     continue
 
-                print(
-                    f"\n❌ Batch {batch_no} failed after "
-                    f"{MAX_RETRIES} retries."
-                )
+                print(f"\n❌ Batch {batch_no} failed after " f"{MAX_RETRIES} retries.")
 
             return
 
@@ -113,10 +102,7 @@ def push_batch(batch, batch_no):
                 )
                 time.sleep(RETRY_DELAY)
             else:
-                print(
-                    f"\n❌ Batch {batch_no} failed after "
-                    f"{MAX_RETRIES} retries."
-                )
+                print(f"\n❌ Batch {batch_no} failed after " f"{MAX_RETRIES} retries.")
 
 
 def main():
@@ -127,7 +113,7 @@ def main():
     batch_no = 1
 
     for i in range(0, len(hotel_ids), BATCH_SIZE):
-        batch = hotel_ids[i:i + BATCH_SIZE]
+        batch = hotel_ids[i : i + BATCH_SIZE]
 
         push_batch(batch, batch_no)
 
