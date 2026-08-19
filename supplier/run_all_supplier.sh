@@ -17,6 +17,7 @@ SCRIPTS=(
     "hyperguestdirect/1_get_all_id.py"
     "hyperguestdirect/2_get_new_id.py"
     "hyperguestdirect/3_update_server_with_itt_content_api.py"
+    "hyperguestdirect/4_update_server_with_itt_content_api.py"
     "restel/1_get_all_update_hotel.py"
     "restel/2_get_new_id.py"
     "restel/3_update_server_with_itt_content_api.py"
