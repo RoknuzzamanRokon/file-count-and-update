@@ -2,10 +2,15 @@ import os
 import requests
 import ijson
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
+
 
 load_dotenv()
 
 HYPERGUEST_TOKEN = os.getenv("HYPERGUEST_TOKEN")
+
+start_date = (datetime.now().date() - timedelta(days=1)).isoformat()
+print(f"Data: {start_date}")
 
 url = "https://hg-static.hyperguest.com/hotels.json"
 
@@ -34,7 +39,9 @@ with requests.get(url, headers=headers, stream=True, timeout=300) as response:
     with open(save_file_path, "w", encoding="utf-8") as f:
         for hotel in ijson.items(response.raw, "item"):
             hotel_id = hotel.get("hotel_id")
-            if hotel_id:
+            last_updated = hotel.get("last_updated")
+
+            if hotel_id and last_updated and last_updated[:10] == start_date:
                 f.write(f"{hotel_id}\n")
                 count += 1
 
